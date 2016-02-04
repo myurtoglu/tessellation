@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tessellation and Twist</title>
+    <link type="text/css" rel="stylesheet" href="tess.css">
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec4 vPosition;
+      uniform float theta;
+      uniform float pureRotation;
+      varying vec4 fColor;
+      void main()
+      {
+        float dist = 1.0;
+        if (pureRotation < 0.5) {
+          dist = sqrt(vPosition.x*vPosition.x + vPosition.y*vPosition.y);
+        }
+        float dt = dist * radians(theta);
+        gl_Position.x = vPosition.x*cos(dt) - vPosition.y*sin(dt);
+        gl_Position.y = vPosition.x*sin(dt) + vPosition.y*cos(dt);
+        gl_Position.z = 0.0;
+        gl_Position.w = 1.0;
+        fColor.r = -vPosition.x-vPosition.y;
+        fColor.g = vPosition.x-vPosition.y;
+        fColor.b = 0.25+vPosition.y;
+        fColor.a = 1.0;
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+      varying vec4 fColor;
+      uniform float colorDraw;
+      void
+      main()
+      {
+        if (colorDraw > 0.5) {
+          gl_FragColor = fColor;
+        }
+        else {
+          gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+      }
+    </script>
+
+    <script type="text/javascript" src="common/webgl-utils.js"></script>
+    <script type="text/javascript" src="common/initShaders.js"></script>
+    <script type="text/javascript" src="common/MV.js"></script>
+    <script type="text/javascript" src="tess.js"></script>
+  </head>
+
+  <body>
+    <h2>Tessellation and Twist</h2>
+    twisting theta&nbsp;&nbsp;<input type="range" min="0" max="360"
+                                     value="0" step="10"
+                                     oninput="changeTheta(this.value)"/>
+    <span id="theta">0</span> deg.<br>
+    recursive steps<input id="recursionSlider" type="range" min="0" max="8"
+                          value="0" step="1"
+                          oninput="changeRecursiveSteps(this.value)"/>
+    <span id="range">0</span><br>
+    <select name="select" onchange="changeShape(this.value)">
+      <option value="triangle" selected>Triangle</option>
+      <option value="square">Square</option>
+    </select>
+    <br><br>
+    <input type="checkbox" id="wireframeCheckbox"
+           onchange="checkboxChange()"/>Wireframe<br>
+    <input type="checkbox" id="colorDrawCheckbox"
+           onchange="checkboxChange()"/>Enable multicolor<br>
+    <input type="checkbox" id="pureRotationCheckbox"
+           onchange="checkboxChange()"/>Pure rotation<br>
+    <input type="checkbox" id="gasketCheckbox"
+           onchange="checkboxChange()"/>Gasket (works only with Triangle)
+    <canvas id="gl-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+  </body>
+</html>
+

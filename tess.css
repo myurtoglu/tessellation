@@ -1,0 +1,23 @@
+body {
+    background: #A9A9A9;
+    margin: 1% 20%;
+    border: 1px dotted black;
+    border-radius: 15px;
+    padding: 10px 10px 10px 10px;
+    font: large "Comic Sans MS", sans-serif;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+h2 {
+    text-align: center;
+    text-shadow: -2px 2px 3px White;
+}
+
+input[type="range"] {
+    width: 275px;
+    margin: 0px 0px 20px 25px;
+}
